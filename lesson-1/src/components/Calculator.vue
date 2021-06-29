@@ -9,12 +9,22 @@
     </div>
 
     <div class="keyboard">
-      <button @click="result = operand1 + operand2">+</button>
-      <button @click="result = operand1 - operand2">-</button>
-      <button @click="result = operand1 * operand2">*</button>
-      <button @click="divison(operand1, operand2)">/</button>
-      <button @click="pow(operand1, operand2)">^</button>
-      <button @click="intdiv(operand1, operand2)">INTDIV</button>
+      <div class="keyboard_operand">
+        <button
+          v-for="operation in operations"
+          @click="calculate(operation)"
+          v-bind:key="operation"
+          v-bind:title="operation"
+        >
+          {{ operation }}
+        </button>
+      </div>
+
+      <div class="keyboard_numbers">
+        <button v-for="(number,index) in 10" v-bind:key="number">
+          {{ index }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -26,35 +36,79 @@ export default {
     return {
       operand1: 0,
       operand2: 0,
+      operations: ["+", "-", "*", "/", "^", "INTDIV"],
+      
       result: 0,
     };
   },
   methods: {
-    counter() {
-      this.val++;
-    },
-
-    pow(val1, val2){
-      this.result = Math.pow(val1, val2);
-    },
-    
-    divison(val1, val2) {
-      if (val2 === 0) {
-        this.result = "Ошибка! (Деление на '0')";
-      } else {
-        this.result = val1 / val2;
+    calculate(op) {
+      switch (op) {
+        case "+":
+          this.add();
+          break;
+        case "-":
+          this.sub();
+          break;
+        case "*":
+          this.mul();
+          break;
+        case "/":
+          this.divison();
+          break;
+        case "^":
+          this.pow();
+          break;
+        case "INTDIV":
+          this.intdiv();
+          break;
       }
     },
 
-    intdiv(val1, val2) {
-      if (val2 === 0) {
+    add() {
+      this.result = this.operand1 + this.operand2;
+    },
+
+    sub() {
+      this.result = this.operand1 - this.operand2;
+    },
+
+    mul() {
+      this.result = this.operand1 + this.operand2;
+    },
+
+    pow() {
+      this.result = Math.pow(this.operand1, this.operand2);
+    },
+
+    divison() {
+      if (this.operand2 === 0) {
         this.result = "Ошибка! (Деление на '0')";
       } else {
-        this.result = parseInt(val1 / val2);
+        this.result = this.operand1 / this.operand2;
+      }
+    },
+
+    intdiv() {
+      if (this.operand2 === 0) {
+        this.result = "Ошибка! (Деление на '0')";
+      } else {
+        this.result = parseInt(this.operand1 / this.operand2);
       }
     },
   },
 };
 </script>
 
-<style></style>
+<style scoped>
+.keyboard_numbers {
+  width: 150px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.keyboard_numbers button {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+}
+</style>
