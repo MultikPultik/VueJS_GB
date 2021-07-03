@@ -3,8 +3,8 @@
     <h1>Калькулятор</h1>
 
     <div class="display">
-      <input type="number" v-model.number="operand1" @focus="picked='Один'"/>
-      <input type="number" v-model.number="operand2" @focus="picked='Два'"/>
+      <input type="number" v-model.number="operand1" @focus="picked = 'Один'" />
+      <input type="number" v-model.number="operand2" @focus="picked = 'Два'" />
       = {{ result }}
     </div>
 
@@ -26,7 +26,7 @@
         </button>
       </div>
 
-      <div class="keyboard_numbers" v-if="checked">
+      <div class="keyboard_numbers" v-show="checked">
         <button
           v-for="(number, index) in 10"
           v-bind:key="number"
@@ -37,7 +37,8 @@
         <button @click="backSpace()"><i class="fas fa-backspace"></i></button>
       </div>
       <br />
-      <div class="choose_operand">
+      <div class="choose_operand" v-show="checked">
+        <div class="wrap"></div>
         <input type="radio" id="op1" value="Один" v-model="picked" />
         <label for="op1">Операнд 1</label>
         <input type="radio" id="op2" value="Два" v-model="picked" />
@@ -47,28 +48,23 @@
   </div>
 </template>
 
-
 <script>
 export default {
   name: "Calculator",
+
   data() {
     return {
       operand1: 0,
       operand2: 0,
-      operations: ["+", "-", "*", "/", "^", "INTDIV"],
+      operations: ["+", "-", "*", "/", "^", "IDIV"],
       checked: true,
       picked: "Один",
       result: 0,
     };
   },
-  watch: {
-    picked: function() {
-      console.log(this.picked);
-    },
-  },
+
   methods: {
     digBtnPressed(op) {
-      console.log(op);
       if (this.picked === "Один") {
         if (this.operand1 === 0) {
           this.operand1 = "";
@@ -81,17 +77,17 @@ export default {
         this.operand2 = "" + this.operand2 + op;
       }
     },
-    backSpace(){
+    backSpace() {
       if (this.picked === "Один") {
         if (this.operand1 === 0) {
           this.operand1 = "";
         }
-        this.operand1 = ("" + this.operand1).slice(0,-1);
+        this.operand1 = ("" + this.operand1).slice(0, -1);
       } else {
         if (this.operand2 === 0) {
           this.operand2 = "";
         }
-        this.operand2 = ("" + this.operand2).slice(0,-1);
+        this.operand2 = ("" + this.operand2).slice(0, -1);
       }
     },
     calculate(op) {
@@ -111,7 +107,7 @@ export default {
         case "^":
           this.pow();
           break;
-        case "INTDIV":
+        case "IDIV":
           this.intdiv();
           break;
       }
@@ -153,14 +149,31 @@ export default {
 </script>
 
 <style scoped>
-.keyboard_numbers {
-  width: 150px;
+.keyboard {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
 }
-.keyboard_numbers button {
+.keyboard button {
+  font-size: 20px;
+  padding: 0;
+  margin: 1px;
   width: 50px;
   height: 50px;
   border-radius: 6px;
+}
+
+.keyboard_numbers {
+  width: 159px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.keyboard_operand {
+  margin-bottom: 10px;
+}
+
+.choose_operand label{
+  margin-right: 30px;
 }
 </style>
