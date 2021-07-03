@@ -3,10 +3,16 @@
     <h1>Калькулятор</h1>
 
     <div class="display">
-      <input type="number" v-model.number="operand1" />
-      <input type="number" v-model.number="operand2" />
+      <input type="number" v-model.number="operand1" @focus="picked='Один'"/>
+      <input type="number" v-model.number="operand2" @focus="picked='Два'"/>
       = {{ result }}
     </div>
+
+    <br />
+    <input type="checkbox" id="checkbox" v-model="checked" />
+    <label for="checkbox">Отобразить экранную клавиатуру</label>
+    <br />
+    <br />
 
     <div class="keyboard">
       <div class="keyboard_operand">
@@ -20,14 +26,27 @@
         </button>
       </div>
 
-      <div class="keyboard_numbers">
-        <button v-for="(number,index) in 10" v-bind:key="number">
+      <div class="keyboard_numbers" v-if="checked">
+        <button
+          v-for="(number, index) in 10"
+          v-bind:key="number"
+          @click="digBtnPressed(index)"
+        >
           {{ index }}
         </button>
+        <button @click="backSpace()"><i class="fas fa-backspace"></i></button>
+      </div>
+      <br />
+      <div class="choose_operand">
+        <input type="radio" id="op1" value="Один" v-model="picked" />
+        <label for="op1">Операнд 1</label>
+        <input type="radio" id="op2" value="Два" v-model="picked" />
+        <label for="op2">Операнд 2</label>
       </div>
     </div>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -37,11 +56,44 @@ export default {
       operand1: 0,
       operand2: 0,
       operations: ["+", "-", "*", "/", "^", "INTDIV"],
-      
+      checked: true,
+      picked: "Один",
       result: 0,
     };
   },
+  watch: {
+    picked: function() {
+      console.log(this.picked);
+    },
+  },
   methods: {
+    digBtnPressed(op) {
+      console.log(op);
+      if (this.picked === "Один") {
+        if (this.operand1 === 0) {
+          this.operand1 = "";
+        }
+        this.operand1 = "" + this.operand1 + op;
+      } else {
+        if (this.operand2 === 0) {
+          this.operand2 = "";
+        }
+        this.operand2 = "" + this.operand2 + op;
+      }
+    },
+    backSpace(){
+      if (this.picked === "Один") {
+        if (this.operand1 === 0) {
+          this.operand1 = "";
+        }
+        this.operand1 = ("" + this.operand1).slice(0,-1);
+      } else {
+        if (this.operand2 === 0) {
+          this.operand2 = "";
+        }
+        this.operand2 = ("" + this.operand2).slice(0,-1);
+      }
+    },
     calculate(op) {
       switch (op) {
         case "+":
